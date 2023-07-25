@@ -9,6 +9,6 @@ namespace ProjectOne.Models
         public int QuestionMark { get; set; }
 
         public int ExamId { get; set; }
-        public Exam? Exam { get; set; }
+        public Exam Exam { get; set; }
     }
 }

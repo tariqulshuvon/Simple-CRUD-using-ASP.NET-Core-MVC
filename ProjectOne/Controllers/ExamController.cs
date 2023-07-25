@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ProjectOne.DbCon;
 using ProjectOne.Models;
 
@@ -24,7 +25,8 @@ namespace ProjectOne.Controllers
         // GET: ExamController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var data = _context.Exams.Find(id);
+            return View(data);
         }
 
         // GET: ExamController/Create
@@ -35,7 +37,6 @@ namespace ProjectOne.Controllers
 
         // POST: ExamController/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult Create(Exam exam)
         {
             if (!ModelState.IsValid)
@@ -50,43 +51,43 @@ namespace ProjectOne.Controllers
         // GET: ExamController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var data = _context.Exams.Find(id);
+            return View(data);
         }
 
         // POST: ExamController/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Exam exam)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                return View(exam);
             }
-            catch
-            {
-                return View();
-            }
+            _context.Entry(exam).State = EntityState.Modified;
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: ExamController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            return View(_context.Exams.Find(id));
         }
 
         // POST: ExamController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        [HttpPost, ActionName("Delete")]
+        public ActionResult DeleteConfirmed(int id)
         {
-            try
+            var exam = _context.Exams.Find(id);
+            if (exam != null)
             {
+                _context.Exams.Remove(exam);
+                _context.SaveChanges();
+
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+            return View();
         }
     }
 }
